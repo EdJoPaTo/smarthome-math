@@ -1,0 +1,20 @@
+[package]
+name = "smarthome-math"
+version = "0.1.0"
+repository = "https://github.com/EdJoPaTo/smarthome-math"
+authors = ["EdJoPaTo <smarthome-math-rust@edjopato.de>"]
+edition = "2021"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["std", "bracket-color", "chrono", "location"]
+location = ["chrono", "dep:suncalc"]
+std = []
+
+[dependencies]
+bracket-color = { version = "0.8", optional = true }
+chrono = { version = "0.4", optional = true, default-features = false, features = ["clock"] }
+suncalc = { version = "0.4", optional = true }
+
+[dev-dependencies]
+float_eq = "1"
