@@ -47,7 +47,7 @@ impl Hsv {
         }
     }
 
-    /// Converts to u8 rgb values
+    /// Converts to `u8` RGB values
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     #[cfg(feature = "bracket-color")]
     #[must_use]
