@@ -1,7 +1,7 @@
 use crate::angle_distance;
 use crate::light::normalize_hue;
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Hsv {
     /// Hue from 0.0 to 360.0
     pub hue: f32,
@@ -34,9 +34,9 @@ impl Hsv {
     #[must_use]
     pub fn calculate_interpolated(start: &Self, end: &Self, position: f32) -> Self {
         if position <= 0.0 {
-            start.clone()
+            *start
         } else if position >= 1.0 {
-            end.clone()
+            *end
         } else {
             let distances = start.calculate_distance_to(end);
             Self {
@@ -51,7 +51,7 @@ impl Hsv {
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     #[cfg(feature = "bracket-color")]
     #[must_use]
-    pub fn to_rgb_u8(&self) -> (u8, u8, u8) {
+    pub fn to_rgb_u8(self) -> (u8, u8, u8) {
         let hsv = bracket_color::hsv::HSV::from_f32(
             self.hue / 360.0,
             self.saturation / 100.0,
