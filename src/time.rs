@@ -35,11 +35,11 @@ pub fn duration_until_next_full_second(time: NaiveTime) -> Duration {
 #[allow(clippy::missing_panics_doc)]
 #[must_use]
 pub fn duration_until(now: NaiveTime, target: NaiveTime) -> Duration {
-    let mut d = target - now;
-    if d.num_seconds() < 0 {
-        d += chrono::Duration::days(1);
+    let mut delta = target - now;
+    if delta.num_seconds() < 0 {
+        delta += chrono::Duration::days(1);
     }
-    d.to_std().expect("duration_until should wrap around")
+    delta.to_std().expect("duration_until should wrap around")
 }
 
 #[test]
@@ -76,33 +76,33 @@ fn duration_till_next_full_second_example() {
 
 #[test]
 fn duration_until_direct() {
-    let d = duration_until(
+    let until = duration_until(
         NaiveTime::from_hms_opt(10, 30, 0).unwrap(),
         NaiveTime::from_hms_opt(13, 37, 0).unwrap(),
     );
-    let minutes = d.as_secs() / 60;
+    let minutes = until.as_secs() / 60;
     #[cfg(feature = "std")]
-    dbg!(d, minutes);
+    dbg!(until, minutes);
     assert_eq!(minutes, (3 * 60) + 7);
 }
 
 #[test]
 fn duration_until_wraparound() {
-    let d = duration_until(
+    let until = duration_until(
         NaiveTime::from_hms_opt(23, 45, 0).unwrap(),
         NaiveTime::from_hms_opt(0, 15, 0).unwrap(),
     );
-    let minutes = d.as_secs() / 60;
+    let minutes = until.as_secs() / 60;
     #[cfg(feature = "std")]
-    dbg!(d, minutes);
+    dbg!(until, minutes);
     assert_eq!(minutes, 30);
 }
 
 #[test]
 fn duration_until_with_millis() {
-    let d = duration_until(
+    let until = duration_until(
         NaiveTime::from_hms_milli_opt(13, 36, 58, 500).unwrap(),
         NaiveTime::from_hms_opt(13, 37, 0).unwrap(),
     );
-    assert_eq!(d, Duration::new(1, 500_000_000));
+    assert_eq!(until, Duration::new(1, 500_000_000));
 }
