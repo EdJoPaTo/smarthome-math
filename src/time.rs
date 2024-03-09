@@ -37,7 +37,7 @@ pub fn duration_until_next_full_second(time: NaiveTime) -> Duration {
 pub fn duration_until(now: NaiveTime, target: NaiveTime) -> Duration {
     let mut delta = target - now;
     if delta.num_seconds() < 0 {
-        delta += chrono::Duration::days(1);
+        delta += chrono::Duration::try_days(1).unwrap();
     }
     delta.to_std().expect("duration_until should wrap around")
 }
