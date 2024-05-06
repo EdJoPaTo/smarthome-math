@@ -8,6 +8,9 @@ on:
     # Check if it works with current dependencies
     - cron: '42 2 * * 6' # weekly on Saturday 2:42 UTC
 
+env:
+  RUSTFLAGS: --allow unknown-lints --deny warnings
+
 jobs:
   rustfmt:
     runs-on: ubuntu-latest
@@ -23,12 +26,13 @@ jobs:
   clippy:
     name: Clippy ${{ matrix.toolchain }}
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
+    continue-on-error: ${{ (matrix.toolchain == 'beta') || (matrix.toolchain == 'nightly') }}
     strategy:
       fail-fast: false
       matrix:
         toolchain:
           - stable
+          - beta
           - nightly
     env:
       RUSTFLAGS: --deny warnings
@@ -51,12 +55,11 @@ jobs:
       matrix:
         toolchain:
           - stable
+          - beta
         os:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-    env:
-      RUSTFLAGS: --allow unknown-lints --deny warnings
     steps:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@master
@@ -86,33 +89,25 @@ jobs:
       matrix:
         toolchain:
           - stable
+          - beta
+          - nightly
         os:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-    env:
-      RUSTFLAGS: --allow unknown-lints --deny warnings
     steps:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
-
       - uses: actions/checkout@v4
       - run: cargo fetch
       - run: cargo build --offline --all-features --all-targets
+      - run: cargo test --offline --all-features
 
-      - name: Run tests
-        run: cargo test --offline --all-features
-
-  github-release:
+  release:
     name: Release ${{ matrix.triple }}
     runs-on: ${{ matrix.os }}
-    needs:
-      - features
-      - test
-    permissions:
-      contents: write
     strategy:
       fail-fast: false
       matrix:
