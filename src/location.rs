@@ -14,6 +14,9 @@ pub fn calc_relative_brightness_of_time<Tz: TimeZone>(
     let timestamp = datetime.timestamp_millis();
     let times = suncalc::get_times(suncalc::Timestamp(timestamp), latitude, longitude, height);
 
+    // let pos = suncalc::get_position(suncalc::Timestamp(timestamp), latitude, longitude);
+    // dbg!(&pos.altitude);
+
     // dbg!(chrono::Local.timestamp_millis_opt(times.dawn.0));
     // dbg!(chrono::Local.timestamp_millis_opt(times.solar_noon.0));
     // dbg!(chrono::Local.timestamp_millis_opt(times.dusk.0));
@@ -23,9 +26,9 @@ pub fn calc_relative_brightness_of_time<Tz: TimeZone>(
     let noon = times.solar_noon.0;
 
     if begin == 0 || end == 0 {
-        // Above polar circle
-        // TODO: currently assumes always minimum brightness, but this fails in summer where always max brightness is required
-        return 0.0;
+        // Above polar circle. Time of date is irrelevant as its either 24h or 0h
+        let pos = suncalc::get_position(suncalc::Timestamp(timestamp), latitude, longitude);
+        return if pos.altitude > 0.0 { 1.0 } else { 0.0 };
     }
 
     if timestamp < begin || timestamp > end {
