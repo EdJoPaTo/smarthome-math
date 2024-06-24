@@ -70,6 +70,14 @@ fn brightness_of_noon() {
     test_relative_brightness("2023-02-17T12:32:00+01:00", 1.0);
 }
 #[test]
+fn brightness_of_summer_noon() {
+    test_relative_brightness("2024-06-20T13:22:00+02:00", 1.0);
+}
+#[test]
+fn brightness_of_winter_noon() {
+    test_relative_brightness("2022-12-21T12:19:00+01:00", 1.0);
+}
+#[test]
 fn brightness_of_sunset() {
     test_relative_brightness("2023-02-17T17:32:00+01:00", 0.3);
 }
