@@ -48,7 +48,7 @@ pub fn calc_relative_brightness_of_time<Tz: TimeZone>(
 
 #[cfg(test)]
 fn test_relative_brightness(datetime: &str, expected: f32) {
-    let datetime = chrono::DateTime::parse_from_rfc3339(datetime).unwrap();
+    let datetime = DateTime::parse_from_rfc3339(datetime).unwrap();
     let relative_brightness = calc_relative_brightness_of_time(&datetime, 53.5, 10.0, Some(5.0));
     #[cfg(feature = "std")]
     dbg!(datetime, relative_brightness);
