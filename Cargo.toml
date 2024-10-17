@@ -9,6 +9,8 @@ rust-version = "1.61"
 
 [features]
 default = ["std", "bracket-color", "chrono", "location"]
+bracket-color = ["dep:bracket-color"]
+chrono = ["dep:chrono"]
 location = ["chrono", "dep:suncalc"]
 std = []
 
