@@ -1,12 +1,12 @@
 use core::time::Duration;
 
-use chrono::{NaiveTime, Timelike};
+use chrono::{NaiveTime, Timelike as _};
 
 pub const SECONDS_IN_MINUTE: u32 = 60;
 pub const SECONDS_IN_HOUR: u32 = SECONDS_IN_MINUTE * 60;
 pub const SECONDS_IN_DAY: u32 = SECONDS_IN_HOUR * 24;
 
-#[allow(clippy::cast_possible_truncation)]
+#[expect(clippy::cast_possible_truncation)]
 #[must_use]
 pub fn minutes_from_midnight(time: NaiveTime) -> u16 {
     let minutes = time.num_seconds_from_midnight() / SECONDS_IN_MINUTE;
@@ -32,7 +32,7 @@ pub fn duration_until_next_full_second(time: NaiveTime) -> Duration {
     Duration::new(0, remaining_nanos)
 }
 
-#[allow(clippy::missing_panics_doc)]
+#[expect(clippy::missing_panics_doc)]
 #[must_use]
 pub fn duration_until(now: NaiveTime, target: NaiveTime) -> Duration {
     let delta = target - now;

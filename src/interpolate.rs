@@ -1,4 +1,4 @@
-#[allow(clippy::cast_sign_loss, clippy::cast_possible_truncation)]
+#[expect(clippy::cast_sign_loss, clippy::cast_possible_truncation)]
 #[must_use]
 pub fn u8(start: u8, end: u8, position: f32) -> u8 {
     f32(f32::from(start), f32::from(end), position) as u8

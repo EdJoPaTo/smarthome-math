@@ -30,7 +30,7 @@ impl Hsv {
         }
     }
 
-    #[allow(clippy::suboptimal_flops)] // requires `std`
+    #[expect(clippy::suboptimal_flops, reason = "requires std")]
     #[must_use]
     pub fn calculate_interpolated(start: &Self, end: &Self, position: f32) -> Self {
         if position <= 0.0 {
@@ -48,7 +48,7 @@ impl Hsv {
     }
 
     /// Converts to `u8` RGB values
-    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+    #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     #[cfg(feature = "bracket-color")]
     #[must_use]
     pub fn to_rgb_u8(self) -> (u8, u8, u8) {

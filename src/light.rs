@@ -2,11 +2,7 @@ use crate::angle_distance::angle_distance;
 
 /// `f32::abs` requires `std`
 fn abs(n: f32) -> f32 {
-    if n.is_sign_positive() {
-        n
-    } else {
-        -n
-    }
+    if n.is_sign_positive() { n } else { -n }
 }
 
 /// use `rem_euclid` instead but it requires `std`

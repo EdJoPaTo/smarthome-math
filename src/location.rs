@@ -3,7 +3,7 @@ use chrono::{DateTime, TimeZone};
 /// Calculate the relative brightness of the given `NaiveDateTime` between 0.0 and 1.0
 /// # Panics
 /// Panics when the calculation result is not between 0.0 and 1.0 which indicates a code error.
-#[allow(clippy::cast_precision_loss)]
+#[expect(clippy::cast_precision_loss)]
 #[must_use]
 pub fn calc_relative_brightness_of_time<Tz: TimeZone>(
     datetime: &DateTime<Tz>,

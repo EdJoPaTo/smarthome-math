@@ -3,9 +3,8 @@ name = "smarthome-math"
 version = "0.1.0"
 repository = "https://github.com/EdJoPaTo/smarthome-math"
 authors = ["EdJoPaTo <smarthome-math-rust@edjopato.de>"]
-edition = "2021"
-rust-version = "1.61"
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+edition = "2024"
+rust-version = "1.85"
 
 [features]
 default = ["std", "bracket-color", "chrono", "location"]
@@ -16,9 +15,13 @@ std = []
 
 [lints.rust]
 unsafe_code = "forbid"
+unused_qualifications = "warn"
 [lints.clippy]
-pedantic = "warn"
-nursery = "warn"
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+allow_attributes = "warn"
+min_ident_chars = "warn"
+unused_trait_names = "warn"
 
 [dependencies]
 bracket-color = { version = "0.8.7", optional = true }
