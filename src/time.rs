@@ -35,11 +35,15 @@ pub fn duration_until_next_full_second(time: NaiveTime) -> Duration {
 #[allow(clippy::missing_panics_doc)]
 #[must_use]
 pub fn duration_until(now: NaiveTime, target: NaiveTime) -> Duration {
-    let mut delta = target - now;
-    if delta.num_seconds() < 0 {
-        delta += chrono::Duration::try_days(1).unwrap();
-    }
-    delta.to_std().expect("duration_until should wrap around")
+    let delta = target - now;
+    delta.to_std().unwrap_or_else(|_| {
+        const DAY: chrono::Duration = chrono::Duration::try_days(1).unwrap();
+        delta
+            .checked_add(&DAY)
+            .unwrap()
+            .to_std()
+            .expect("duration_until should wrap around")
+    })
 }
 
 #[test]
@@ -96,6 +100,21 @@ fn duration_until_wraparound() {
     #[cfg(feature = "std")]
     dbg!(until, minutes);
     assert_eq!(minutes, 30);
+}
+
+#[test]
+fn duration_until_wraparound_millis() {
+    let until = duration_until(
+        NaiveTime::from_hms_milli_opt(20, 15, 0, 20).unwrap(),
+        NaiveTime::from_hms_opt(20, 15, 0).unwrap(),
+    );
+    let total_minutes = until.as_secs() / 60;
+    let hours = total_minutes / 60;
+    let minutes = total_minutes % 60;
+    #[cfg(feature = "std")]
+    dbg!(until, hours, minutes);
+    assert_eq!(hours, 23);
+    assert_eq!(minutes, 59);
 }
 
 #[test]
