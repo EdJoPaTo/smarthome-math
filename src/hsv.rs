@@ -47,6 +47,18 @@ impl Hsv {
         }
     }
 
+    /// Converts from `f32` RGB values in the range of 0.0..1.0
+    #[cfg(feature = "bracket-color")]
+    #[must_use]
+    pub fn from_rgb_f32(red: f32, green: f32, blue: f32) -> Self {
+        let hsv = bracket_color::rgb::RGB::from_f32(red, green, blue).to_hsv();
+        Self {
+            hue: hsv.h * 360.0,
+            saturation: hsv.s * 100.0,
+            brightness: hsv.v * 100.0,
+        }
+    }
+
     /// Converts to `u8` RGB values
     #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     #[cfg(feature = "bracket-color")]
