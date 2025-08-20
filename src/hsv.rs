@@ -77,8 +77,25 @@ impl Hsv {
     }
 }
 
+#[test]
+fn from_hue() {
+    let result = Hsv::from_hue(42.0);
+    float_eq::assert_float_eq!(result.hue, 42.0, abs <= 0.1);
+    float_eq::assert_float_eq!(result.saturation, 100.0, abs <= 0.1);
+    float_eq::assert_float_eq!(result.brightness, 100.0, abs <= 0.1);
+}
+
+#[cfg(feature = "bracket-color")]
+#[test]
+fn from_rgb() {
+    let result = Hsv::from_rgb_f32(1.0, 0.0, 0.0);
+    float_eq::assert_float_eq!(result.hue, 0.0, abs <= 0.1);
+    float_eq::assert_float_eq!(result.saturation, 100.0, abs <= 0.1);
+    float_eq::assert_float_eq!(result.brightness, 100.0, abs <= 0.1);
+}
+
 #[cfg(test)]
-mod tests {
+mod interpolate_tests {
     use super::Hsv;
 
     #[test]
@@ -173,7 +190,7 @@ mod tests {
 }
 
 #[cfg(all(test, feature = "bracket-color"))]
-mod rgb_tests {
+mod to_rgb_tests {
     use super::*;
 
     fn hsv_to_rgb(hue: f32, saturation: f32, brightness: f32) -> (u8, u8, u8) {
