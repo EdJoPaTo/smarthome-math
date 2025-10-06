@@ -1,5 +1,24 @@
 use chrono::{DateTime, TimeZone};
 
+pub fn get_sunrise_sunset<Tz: TimeZone>(
+    datetime: &DateTime<Tz>,
+    latitude: f64,
+    longitude: f64,
+    height: Option<f64>,
+) -> Option<(DateTime<Tz>, DateTime<Tz>)> {
+    let timestamp = datetime.timestamp_millis();
+    let times = suncalc::get_times(suncalc::Timestamp(timestamp), latitude, longitude, height);
+    let sunrise = times.sunrise.0;
+    let sunset = times.sunset.0;
+    if sunrise == 0 || sunset == 0 {
+        // Above polar circle.
+        return None;
+    }
+    let sunrise = datetime.timezone().timestamp_millis_opt(sunrise).single()?;
+    let sunset = datetime.timezone().timestamp_millis_opt(sunset).single()?;
+    Some((sunrise, sunset))
+}
+
 /// Calculate the relative brightness of the given `NaiveDateTime` between 0.0 and 1.0
 /// # Panics
 /// Panics when the calculation result is not between 0.0 and 1.0 which indicates a code error.
@@ -44,6 +63,25 @@ pub fn calc_relative_brightness_of_time<Tz: TimeZone>(
         "brightness_factor is not between 0.0 and 1.0: {brightness_factor}",
     );
     brightness_factor
+}
+
+#[test]
+fn sunrise_sunset() {
+    use chrono::Timelike as _;
+
+    let datetime = DateTime::parse_from_rfc3339("2021-01-01T02:00:00+01:00").unwrap();
+    let (sunrise, sunset) = get_sunrise_sunset(&datetime, 53.5, 10.0, Some(5.0)).unwrap();
+
+    #[cfg(feature = "std")]
+    dbg!(sunrise, sunset);
+
+    assert_eq!(datetime.date_naive(), sunrise.date_naive());
+    assert_eq!(datetime.date_naive(), sunset.date_naive());
+
+    assert_eq!(sunrise.hour(), 8);
+    assert_eq!(sunrise.minute(), 36);
+    assert_eq!(sunset.hour(), 16);
+    assert_eq!(sunset.minute(), 12);
 }
 
 #[cfg(test)]
